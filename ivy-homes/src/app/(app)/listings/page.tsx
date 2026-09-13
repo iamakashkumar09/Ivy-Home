@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { listingsAPI, Listing, ListingFilters } from '@/lib/api';
@@ -46,7 +46,7 @@ const SORT_OPTIONS = [
   { value: 'carpet_area_desc', label: 'Carpet Area: Largest First', sort_by: 'carpet_area', order: 'desc' },
 ];
 
-export default function ListingsPage() {
+function ListingsContent() {
   const searchParams = useSearchParams();
   const initialLocality = searchParams.get('locality') || undefined;
   const initialBhk = searchParams.get('bhk') ? Number(searchParams.get('bhk')) : undefined;
@@ -559,5 +559,13 @@ export default function ListingsPage() {
         onClear={() => setComparedProperties([])}
       />
     </div>
+  );
+}
+
+export default function ListingsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-amber-400 border-t-transparent rounded-full animate-spin"></div></div>}>
+      <ListingsContent />
+    </Suspense>
   );
 }

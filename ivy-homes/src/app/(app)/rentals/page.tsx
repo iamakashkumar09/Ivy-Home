@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { rentalsAPI, Rental } from '@/lib/api';
@@ -26,7 +26,7 @@ const LOCALITIES = [
 const FURNISHING_OPTIONS = ['unfurnished', 'semi-furnished', 'fully-furnished'];
 const BHK_OPTIONS = [1, 2, 3, 4, 5];
 
-export default function RentalsPage() {
+function RentalsContent() {
   const searchParams = useSearchParams();
   const initialLocality = searchParams.get('locality') || undefined;
 
@@ -321,5 +321,13 @@ export default function RentalsPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function RentalsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-teal-400 border-t-transparent rounded-full animate-spin"></div></div>}>
+      <RentalsContent />
+    </Suspense>
   );
 }

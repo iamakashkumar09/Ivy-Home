@@ -1,0 +1,84 @@
+{
+  "api_key": "IVY26-A4C53DFE6838",
+  "candidate": {
+    "name": "Akash Kumar Gaud",
+    "email": "iamakashkr.09@gmail.com",
+    "repo_url": "https://github.com/iamakashkumar09/Ivy-Home",
+    "demo_url": "https://ivy-home-six.vercel.app/"
+  },
+  "answers": {
+    "total_listing_records": 4400,
+    "unique_properties": 4400,
+    "active_listings": 3477,
+    "corrupt_listing_ids": [
+      "MAG-2002456",
+      "ZER-2001710",
+      "SQU-2001685",
+      "SQU-2002386",
+      "100-2001154",
+      "SQU-2003252",
+      "ZER-2001308",
+      "SQU-2002038",
+      "DWE-2001261",
+      "DWE-2002997"
+    ],
+    "total_monthly_rent": 57494600,
+    "avg_price_per_sqft_2bhk": 9214.50,
+    "costliest_project": {
+      "project_id": "P20165",
+      "price_max_inr": 99.8
+    },
+    "listings_last_7_days": 86,
+    "fake_listing_ids": [
+      "MAG-2000359",
+      "MAG-2004137",
+      "MAG-2003860",
+      "MAG-2001559",
+      "MAG-2002568",
+      "MAG-2002932",
+      "MAG-2001762",
+      "MAG-2002105",
+      "MAG-2002271",
+      "MAG-2002035",
+      "MAG-2002301",
+      "MAG-2004194",
+      "MAG-2002186",
+      "MAG-2002889",
+      "MAG-2003311",
+      "MAG-2000360",
+      "MAG-2000447",
+      "MAG-2001700",
+      "MAG-2004272",
+      "MAG-2003190",
+      "MAG-2000969",
+      "MAG-2003551",
+      "MAG-2000324"
+    ],
+    "projects_with_wrong_listing_count": 363
+  },
+  "findings": [
+    {
+      "endpoint": "/v1/listings",
+      "category": "Data Integrity",
+      "documented": "All listings should have a valid price and carpet area.",
+      "actual": "Some listings contain negative or invalid values for price or carpet area.",
+      "how_found": "Data parsing via script iteration.",
+      "impact": "Can break UI components like EMI calculators that expect positive integers.",
+      "evidence": [
+        "Listing MAG-2002456 has a negative price.",
+        "Listing SQU-2001685 has an invalid carpet area."
+      ]
+    },
+    {
+      "endpoint": "/v1/projects",
+      "category": "Data Accuracy",
+      "documented": "total_listings indicates the number of active listings for a project.",
+      "actual": "363 projects report a total_listings count that does not match the actual number of listings associated with their project_id.",
+      "how_found": "Aggregating listing project_ids and comparing against the projects endpoint.",
+      "impact": "Users may see incorrect availability counts on the frontend.",
+      "evidence": [
+        "Calculated actual listings per project and found 363 discrepancies."
+      ]
+    }
+  ]
+}

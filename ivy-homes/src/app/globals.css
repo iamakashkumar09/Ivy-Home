@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #050814;
+  --bg-secondary: #0A0F24;
+  --bg-card: #0D152D;
+  --bg-card-hover: #121E3D;
+  --bg-glass: rgba(13, 21, 45, 0.72);
+  --bg-glass-strong: rgba(10, 16, 36, 0.88);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glass-glow: rgba(245, 166, 35, 0.3);
+  --accent-gold: #F5A623;
+  --accent-gold-light: #FCD34D;
+  --accent-gold-dim: #D97706;
+  --accent-amber: #F59E0B;
+  --accent-violet: #8B5CF6;
+  --accent-teal: #0EA5E9;
+  --accent-emerald: #10B981;
+  --accent-rose: #F43F5E;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  min-width: 320px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+body {
+  background-image: 
+    radial-gradient(ellipse at 15% 10%, rgba(139, 92, 246, 0.09) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 25%, rgba(245, 166, 35, 0.07) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 80%, rgba(14, 165, 233, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 45%);
+}
+
+/* Custom luxury scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(245, 166, 35, 0.5); }
+
+/* Glassmorphic card */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+}
+
+.glass-strong {
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Gold shimmer text */
+.gold-text {
+  background: linear-gradient(135deg, #FFF0C2 0%, #F5A623 45%, #FCD34D 70%, #F59E0B 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+/* Emerald shimmer text */
+.emerald-text {
+  background: linear-gradient(135deg, #6EE7B7 0%, #10B981 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Violet gradient text */
+.violet-text {
+  background: linear-gradient(135deg, #DDD6FE 0%, #A78BFA 50%, #7C3AED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Gradient border */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(245,166,35,0.35), rgba(139,92,246,0.3), rgba(14,165,233,0.15));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.gradient-border-emerald::before {
+  background: linear-gradient(135deg, rgba(16,185,129,0.5), rgba(14,165,233,0.3));
+}
+
+/* Card hover lift & glow */
+.card-hover {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+}
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 24px 0 rgba(245, 166, 35, 0.12);
+  border-color: rgba(245, 166, 35, 0.35);
+}
+
+/* Hero gradient */
+.hero-gradient {
+  background: linear-gradient(180deg, #050814 0%, #080D21 40%, #050814 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated subtle pulse */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Shimmer skeleton */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 300% 100%;
+  animation: skeleton-loading 1.6s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Badge glows */
+.badge-gold {
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.3);
+  color: #FCD34D;
+}
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #6EE7B7;
+}
+.badge-violet {
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #DDD6FE;
+}
+.badge-teal {
+  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  color: #7DD3FC;
+}
+
+/* Focus styling */
+*:focus-visible {
+  outline: 2px solid rgba(245, 166, 35, 0.7);
+  outline-offset: 2px;
+}

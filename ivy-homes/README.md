@@ -2,8 +2,6 @@
 
 Ivy Homes is a premium, verified real estate ecosystem tailored for the luxury property market in Hyderabad. Featuring a modern, stunning glassmorphic UI, smooth micro-interactions, and a responsive fluid design, it provides users with a seamless and visually striking property discovery experience.
 
-> **Note:** The Next.js application codebase is located inside the `ivy-homes` subdirectory. Navigate into `ivy-homes/` to install dependencies and run the server.
-
 ## ✨ Features
 
 - **Luxury Glassmorphic UI:** A visually stunning interface with dynamic glass panels, soft neon glows, and custom blurring effects optimized for ultra-smooth scrolling.
@@ -25,7 +23,7 @@ Ivy Homes is a premium, verified real estate ecosystem tailored for the luxury p
 
 ## 🔌 API Integration & Architecture
 
-The application communicates with the backend (`https://solve.ivy.homes`) using a custom configured **Axios instance** (`ivy-homes/src/lib/api.ts`).
+The application communicates with the backend (`https://solve.ivy.homes`) using a custom configured **Axios instance** (`src/lib/api.ts`).
 
 ### Authentication & Token Lifecycle
 The platform uses secure JWT-based authentication:
@@ -64,42 +62,43 @@ Ensure you have [Node.js](https://nodejs.org/) (v20 or higher recommended) and `
 
 ### 2. Installation
 
-Clone the repository and navigate into the `ivy-homes` directory to install dependencies:
+Clone the repository and install the dependencies:
 
 ```bash
-cd ivy-homes
 npm install
 ```
 
 ### 3. Environment Configuration
 
-Create a `.env` or `.env.local` file inside the `ivy-homes` directory and add your API credentials:
+Create a `.env` or `.env.local` file in the root of your project directory and add your API credentials:
 
 ```env
 NEXT_PUBLIC_API_BASE_URL="https://solve.ivy.homes"
 NEXT_PUBLIC_API_KEY="your_api_key_here"
 ```
 
+> **Note:** Since these environment variables are prefixed with `NEXT_PUBLIC_`, they will be safely injected into the browser bundle at build time. 
+
 ### 4. Running the Development Server
 
-Start the local development server from inside the `ivy-homes` directory:
+Start the local development server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to explore the platform.
+Open [http://localhost:3000](http://localhost:3000) with your browser to explore the platform. If you modify your `.env` file while the server is running, make sure to restart the dev server to apply the changes.
 
 ## 📂 Project Structure
 
-- `ivy-homes/src/app/` - Next.js App Router pages (Home, Login, Dashboard, Listings, Analytics).
-- `ivy-homes/src/components/` - Reusable UI components (Navbar, Footer, Modals, Cards).
-- `ivy-homes/src/lib/` - Utility functions, Context providers, and the configured Axios client.
-- `ivy-homes/public/` - Static assets like images and fonts.
+- `src/app/` - Next.js App Router pages (Home, Login, Dashboard, Listings, Analytics).
+- `src/components/` - Reusable UI components (Navbar, Footer, Modals, Cards).
+- `src/lib/` - Utility functions, Context providers, and the `api.ts` configured Axios client.
+- `public/` - Static assets like images and fonts.
 
 ## 🎨 Design System
 
-The application utilizes a custom Tailwind CSS v4 design system configured in `ivy-homes/src/app/globals.css`. 
+The application utilizes a custom Tailwind CSS v4 design system configured in `src/app/globals.css`. 
 Key aesthetic elements include:
 - A dark space-themed `#050814` background.
 - High-contrast typography with modern sans-serif fonts.

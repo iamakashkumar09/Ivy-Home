@@ -13,6 +13,33 @@ import {
   Scale, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
+// ─── Shared Swipe Logic ───
+function useSwipe(onSwipeLeft: (e: React.SyntheticEvent) => void, onSwipeRight: (e: React.SyntheticEvent) => void) {
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchEndX, setTouchEndX] = useState(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+    setTouchEndX(0); // Reset on start
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartX || !touchEndX) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > 50) {
+      onSwipeLeft(e);
+    } else if (distance < -50) {
+      onSwipeRight(e);
+    }
+    setTouchStartX(0);
+    setTouchEndX(0);
+  };
+
+  return { handleTouchStart, handleTouchMove, handleTouchEnd };
+}
+
 // ─── Luxury Listing Card ────────────────────────────────────────────────────
 
 interface ListingCardProps {
@@ -65,17 +92,19 @@ export function ListingCard({
     onCompareToggle?.(listing);
   };
 
-  const nextImage = (e: React.MouseEvent) => {
+  const nextImage = (e: React.SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setCurrentImgIndex((prev) => (prev + 1) % images.length);
   };
 
-  const prevImage = (e: React.MouseEvent) => {
+  const prevImage = (e: React.SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setCurrentImgIndex((prev) => (prev - 1 + images.length) % images.length);
   };
+
+  const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe(nextImage, prevImage);
 
   const furnLabel =
     listing.furnishing === 'fully-furnished'
@@ -99,13 +128,53 @@ export function ListingCard({
         <Link href={`/listings/${listing.listing_id}`} className="block">
           <div className="flex flex-col sm:flex-row rounded-2xl overflow-hidden glass border border-white/10 card-hover group cursor-pointer bg-[#0D152D]">
             {/* Thumbnail */}
-            <div className="relative sm:w-80 h-56 sm:h-auto shrink-0 overflow-hidden bg-slate-900">
+            <div 
+              className="relative sm:w-80 h-56 sm:h-auto shrink-0 overflow-hidden bg-slate-900"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               <img
                 src={images[currentImgIndex]}
                 alt={listing.apartment_name}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+              
+              {/* Carousel navigation arrows */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </>
+              )}
+
+              {/* Carousel Dots */}
+              {images.length > 1 && (
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-sm pointer-events-none">
+                  {images.map((_, i) => (
+                    <span
+                      key={i}
+                      className={cn(
+                        'h-1.5 rounded-full transition-all duration-300',
+                        i === currentImgIndex ? 'w-4 bg-amber-400' : 'w-1.5 bg-white/40'
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
 
               {/* Stacked badges */}
               <div className="absolute top-3.5 left-3.5 flex flex-col items-start gap-2 z-10 pointer-events-none">
@@ -212,7 +281,12 @@ export function ListingCard({
       <Link href={`/listings/${listing.listing_id}`} className="block h-full group">
         <div className="flex flex-col h-full rounded-3xl overflow-hidden card-hover glass border border-white/10 bg-[#0D152D] transition-all">
           {/* ── 1. Image Container (Self-contained, generous height) ── */}
-          <div className="relative w-full h-52 sm:h-56 shrink-0 overflow-hidden bg-slate-900">
+          <div 
+            className="relative w-full h-52 sm:h-56 shrink-0 overflow-hidden bg-slate-900"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <img
               src={images[currentImgIndex]}
               alt={listing.apartment_name}
@@ -374,6 +448,21 @@ interface RentalCardProps {
 
 export function RentalCard({ rental, index = 0 }: RentalCardProps) {
   const images = getPropertyImages(rental.property_type, rental.listing_id);
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
+  const nextImage = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImgIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImgIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe(nextImage, prevImage);
 
   return (
     <motion.div
@@ -385,13 +474,53 @@ export function RentalCard({ rental, index = 0 }: RentalCardProps) {
       <Link href={`/rentals/${rental.listing_id}`} className="block h-full group">
         <div className="flex flex-col h-full rounded-3xl overflow-hidden card-hover glass border border-white/10 bg-[#0D152D] transition-all">
           {/* Image */}
-          <div className="relative w-full h-52 sm:h-56 shrink-0 overflow-hidden bg-slate-900">
+          <div 
+            className="relative w-full h-52 sm:h-56 shrink-0 overflow-hidden bg-slate-900"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <img
-              src={images[0]}
+              src={images[currentImgIndex]}
               alt={rental.apartment_name}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+
+            {/* Carousel navigation arrows */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
+
+            {/* Carousel Dots */}
+            {images.length > 1 && (
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-sm pointer-events-none">
+                {images.map((_, i) => (
+                  <span
+                    key={i}
+                    className={cn(
+                      'h-1.5 rounded-full transition-all duration-300',
+                      i === currentImgIndex ? 'w-4 bg-teal-400' : 'w-1.5 bg-white/40'
+                    )}
+                  />
+                ))}
+              </div>
+            )}
 
             <div className="absolute top-3.5 left-3.5 flex flex-col items-start gap-1.5 z-10 pointer-events-none">
               <span className="inline-block px-3 py-1 rounded-full bg-teal-500 text-teal-950 text-[11px] font-extrabold shadow-lg backdrop-blur-md">
